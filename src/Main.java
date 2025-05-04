@@ -1,3 +1,6 @@
+import BallotPackage.Ballot;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -9,11 +12,6 @@ import java.util.Scanner;
 
 
 public class Main {
-
-
-
-
-
     public static void main(String[] args) throws IOException {
         Template basicTemplate = new Template("President",
                 "This person will run the country!",
@@ -23,22 +21,84 @@ public class Main {
         Server server = new Server();
         server.startSocket(basicTemplate);
 
+        VotingControl vc = new VotingControl();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        SDCardPort sdCardPort = new SDCardPort(1, SDMode.WRITE_ONLY);
+        // init the reader and printer and battery and latch
         IDCardReader reader = new IDCardReader();
         Printer printer = new Printer();
-        SDCardPort sdCardPort = new SDCardPort(1, SDMode.READ_ONLY);
         Battery battery = new Battery();
         Latch latch = new Latch();
 
-        //kk
+        // init the screen
         Screen screen = new Screen();
-        Monitor mon
 
+        // init all the sd cards
         SDCardPort sdCardPort1 = new SDCardPort(1, SDMode.WRITE_ONLY);
         SDCardPort sdCardPort2 = new SDCardPort(2, SDMode.WRITE_ONLY);
         SDCardPort sdCardPort3 = new SDCardPort(3, SDMode.WRITE_ONLY);
 
+        // init the ballot class
+        Ballot ballot = new Ballot(new File("testFile1.txt"));
+
+        // init the vote recording
+        VoteRecording voteRecording = new VoteRecording(sdCardPort3, sdCardPort2, printer);
+
+        //init the vote process
+        VotingProcess votingProcess = new VotingProcess(screen);
+
+        // init the adminManager
+        AdminManager adminManager = new AdminManager(latch, screen);
+        Monitor monitor = new Monitor(latch, sdCardPort1, sdCardPort2, sdCardPort3, screen, printer);
+        VotingManager votingManager = new VotingManager(ballot, voteRecording, votingProcess);
+
+
+        // init the id card reader and the cardholder
+        IDCardReader idCardReader = new IDCardReader();
+        CardHolder cardHolder = new CardHolder(idCardReader);
+
         // pass Monitor, and Admin Manager, and Voting Manager, and Card Holder
-        VotingControl vc = new VotingControl();
+        VotingControl vc = new VotingControl(monitor, adminManager ,votingManager ,cardHolder);
 
 
         // Initialize voting machine devices for socket communication

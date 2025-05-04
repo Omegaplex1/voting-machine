@@ -12,6 +12,7 @@ public class Template implements Serializable {
     public String descHeading;
     public int selectionCount;
     public Selection[] selections;
+    public TemplateButton[] buttons;
 
 
 
@@ -31,13 +32,12 @@ public class Template implements Serializable {
 
 
 
-
-    public String title;
-    public String description;
-    public String[] selections;
-    public boolean[] buttons;
-    // The user's selected vote
-    public String vote;
+//    public String title;
+//    public String description;
+////    public String[] selections;
+//    public boolean[] buttons;
+//    // The user's selected vote
+//    public String vote;
 
     /**
      * Template that can be sent over the socket

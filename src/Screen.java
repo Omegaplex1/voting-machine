@@ -12,7 +12,7 @@ import java.net.Socket;
 
 
 public class Screen extends Device implements Serializable {
-    private Template currentTemplate = null;
+//    private Template currentTemplate = null;
     private boolean templateReady = false;
     private boolean failure = false;
 
