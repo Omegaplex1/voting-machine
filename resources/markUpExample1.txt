@@ -1,0 +1,59 @@
+/b
+/p
+
+/t
+Presidential Election
+//t
+
+/d
+General Election for the president of the United States of America
+//d
+
+/n
+3
+//n
+
+/o
+Donald Trump
+//o
+
+/o
+Bernie Sanders
+//o
+
+/o
+Kamala Harris
+//o
+
+//p
+
+
+/p
+
+/t
+Most Controversial Celebrity
+//t
+
+/d
+General Election for the most controversial public figure
+//d
+
+/n
+1
+//n
+
+/o
+Kanye West
+//o
+
+/o
+Alex Jones
+//o
+
+/o
+Elon Musk
+//o
+
+
+//p
+//b

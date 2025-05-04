@@ -1,0 +1,69 @@
+/b
+/p
+
+/t
+Favorite Programming Language
+//t
+
+/d
+Vote for your most loved programming language in 2025
+//d
+
+/n
+5
+//n
+
+/o
+Python
+//o
+
+/o
+JavaScript
+//o
+
+/o
+C++
+//o
+
+/o
+Rust
+//o
+
+/o
+Haskell
+//o
+
+//p
+
+/p
+
+/t
+Best Sci-Fi Movie of All Time
+//t
+
+/d
+Select the sci-fi film you believe deserves the top spot
+//d
+
+/n
+4
+//n
+
+/o
+Blade Runner
+//o
+
+/o
+The Matrix
+//o
+
+/o
+Inception
+//o
+
+/o
+Interstellar
+//o
+
+//p
+//b
