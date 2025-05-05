@@ -28,9 +28,6 @@ public class Printer extends Device implements Serializable {
                 throw new RuntimeException(e);
             }
         }).start();
-
-        this.print("HELLO FROM THE OTHER SIIIIIIIIDE");
-
     }
 
     // method to listen for messages
@@ -122,7 +119,6 @@ public class Printer extends Device implements Serializable {
     public static void main(String[] args) throws IOException {
         Printer printer = new Printer();
 
-        printer.print("HELLO");
 
     }
 }

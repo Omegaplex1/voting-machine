@@ -16,9 +16,7 @@ public class Monitor {
                    SDCardPort sdCard3, Screen screen,
                    Printer printer, Battery battery) throws IOException {
 
-        
         this.latch = new Latch(); // the latch
-
 
         // init all the SD cards
         this.sdCard1 = new SDCardPort(1, SDMode.WRITE_ONLY);
@@ -57,15 +55,8 @@ public class Monitor {
                 System.out.println("Waiting for voting control to start...");
                 Thread.sleep(1000);
             }
-//            System.out.println(":");
 
-            // wait for 1 second
-//            System.out.println("(In Monitor) Waiting for 1 second...");
             Thread.sleep(1000);
-
-//            System.out.println("(In Monitor) Monitoring Devices for Failures...");
-
-//            sdCard1.simulateFailure();
 
             if (this.sdCard1.failure()){
                 System.out.println("SDCard 1 failure");
@@ -94,6 +85,11 @@ public class Monitor {
             }
             if (this.latch.failure()){
                 System.out.println("Latch failure");
+                vc.sendMessage("Failure");
+                break;
+            }
+            if (this.battery.failure()){
+                System.out.println("Battery failure");
                 vc.sendMessage("Failure");
                 break;
             }

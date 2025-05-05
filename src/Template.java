@@ -10,10 +10,9 @@ public class Template implements Serializable {
     private String description;
     private int selections;
     private HashMap<String, Boolean> options = new HashMap<>();
-    private String who;
+    private int index;
 
-    public Template(String who,String title, String description, int selections,HashMap<String,Boolean> options) {
-        this.who = who;
+    public Template(String title, String description, int selections,HashMap<String,Boolean> options) {
         this.title = title;
         this.description = description;
         this.selections = selections;
@@ -24,7 +23,6 @@ public class Template implements Serializable {
         this.title = "Failure occured with " + device;
         this.description = "Please sellect and option below";
         this.selections = 0;
-        this.options = new HashMap<>();
         options.put("Power Down",false);
         options.put("Suspend",false);
     }
@@ -40,6 +38,9 @@ public class Template implements Serializable {
     }
     public HashMap<String,Boolean> getOptions() {
         return options;
+    }
+    public int getIndex() {
+        return index;
     }
 
 

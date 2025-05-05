@@ -1,19 +1,37 @@
-import BallotPackage.Ballot;
-import BallotPackage.Proposition;
-
-import java.time.temporal.UnsupportedTemporalTypeException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class VotingProcess {
     private Screen screen;
     private Ballot ballot;
-    private boolean isValid = true;
-    private int votingIndex = -1;
 
-    public VotingProcess(Screen screen, Ballot ballot){
+
+    public VotingProcess(Screen screen, Ballot ballot) throws IOException {
         this.screen = screen;
         this.ballot = ballot;
+        ArrayList<Template> temps = getTemplate();
+        screen.sendTempArrays(temps);
+    }
+    private ArrayList<Template> getTemplate(){
+        ArrayList<Template> temps = new ArrayList<>();
+        for(int i = 0; i < ballot.getSize();i++){
+            Proposition temp = ballot.getPropositionAtIndex(i);
+            HashMap<String,Boolean> options = getHashMap(temp);
+            temps.add(new Template(temp.getTitle(),temp.getDescription(),temp.getNumberOfSelections(),options);
+        }
+        return temps;
+    }
+    private HashMap<String,Boolean> getHashMap(Proposition p){
+        HashMap<String,Boolean> options = new HashMap<>();
+        for(int i = 0; i < p.getOptions().getOptions().size();i++){
+            options.put(p.getOptions().getOptions().get(i),true);
+        }
+        return options;
     }
 
+    public static void main(String args[]) throws IOException {
+        VotingProcess main = new VotingProcess(new Screen(),new Ballot());
 
+    }
 }

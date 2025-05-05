@@ -1,7 +1,4 @@
-import BallotPackage.Ballot;
-
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -9,7 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class VotingControl {
     private Monitor monitor;
     private AdminManager admin;
-    private VotingManager vote;
+    private VotingManager votingManager;
     private CardHolder card;
     private BlockingQueue messages;
 
@@ -22,7 +19,7 @@ public class VotingControl {
 
 
         this.admin = admin;
-        this.vote = vot;
+        this.votingManager = vot;
         this.card = card;
         this.messages = new LinkedBlockingQueue();
 
@@ -34,15 +31,35 @@ public class VotingControl {
             }
         }).start();
 
-//        mainHandlingLoop();
+        new Thread(() -> mainHandlingLoop()).start();
 
     }
 
-//    private void mainHandlingLoop(){
-//        while (true){
-//            if (card.cardDetected())
-//        }
-//    }
+    /**
+     * Method to constantly check if a card has been inserted.
+     */
+    private void mainHandlingLoop(){
+        while (true){
+            if (card.cardDetected()){
+                String cardT = card.getCardType();
+                int cardNum = card.getCardNumber();
+
+                System.out.println("Card Detected: " + cardT + " (" + cardNum + ") ");
+                // 1st admin
+                if (cardT.equals("A")){
+
+                }
+                // 2nd "Voter"
+                else {
+                    votingManager.startVoting();
+                    System.out.println("Starting the voting process");
+                }
+            }
+            else {
+                System.out.println("No card detected");
+            }
+        }
+    }
 
     /**
      * Method to constantly read in messages
@@ -96,7 +113,7 @@ public class VotingControl {
         SDCardPort sdCardPort3 = new SDCardPort(3, SDMode.WRITE_ONLY);
 
         // init the id card reader and the cardholder
-        IDCardReader idCardReader = new IDCardReader("localhost", 5001);
+        IDCardReader idCardReader = new IDCardReader();
         CardHolder cardHolder = new CardHolder(idCardReader);
 
         //init the vote process

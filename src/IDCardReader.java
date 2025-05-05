@@ -42,6 +42,7 @@ public class IDCardReader extends Device implements Serializable {
     private Socket socket;
     private ObjectOutputStream output;
     private ObjectInputStream input;
+    private CardHolder cardHolder;
 
 
 
@@ -61,6 +62,15 @@ public class IDCardReader extends Device implements Serializable {
         output.flush();
 
     }
+
+    /**
+     * Method to set the cardholder
+     * @param cardHolder
+     */
+    public void setCardHolder(CardHolder cardHolder) {
+        this.cardHolder = cardHolder;
+    }
+
 
     public boolean cardInserted(){
         return cardPresent;
@@ -146,45 +156,18 @@ public class IDCardReader extends Device implements Serializable {
 
     public void eraseCard() throws IOException {
         if (cardPresent){
+            output.writeObject("ERASE_CARD");
+            output.flush();
+        }
+    }
+
+    public void ejectCard1() throws IOException {
+        if (cardPresent){
             output.writeObject("EJECT_CARD");
             output.flush();
         }
     }
 
-//    /**
-//     * Gets card type. May return null if there is no card inserted.
-//     *
-//     * @author  Ira Khan
-//     * @return  card type if card is present
-//     *          null otherwise
-//     */
-//    public char getCardType(){
-//        if (cardPresent){
-//            return currentCard.cardType();
-//        }
-//        failure = true;
-//        throw new RuntimeException("ERR - Get Card Type: No card present");
-//    }
-//
-//    /**
-//     * Gets card number. May return null if there is no card inserted.
-//     *
-//     * @author  Ira Khan
-//     * @return  card type if card is present
-//     *          null otherwise
-//     */
-//    public int getCardNumber(){
-//        if (cardPresent) {
-//            return currentCard.cardNumber();
-//        }
-//        failure = true;
-//        throw new RuntimeException("ERR - Get Card Number: No card present");
-//    }
-
-//    public void eraseCard(){
-//        currentCard = new IDCardDetails(-1,'N');
-//        erased = true;
-//    }
 
     public IDCardDetails ejectCard(){
         //Do NOT return the card if it is not erased.

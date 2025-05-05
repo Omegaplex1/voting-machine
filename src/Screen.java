@@ -8,6 +8,7 @@
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 
 public class Screen extends Device implements Serializable {
@@ -149,6 +150,12 @@ public class Screen extends Device implements Serializable {
         }
 
         return "OK";
+
+    }
+
+    public void sendTempArrays(ArrayList<Template> temps) throws IOException {
+        guiOutput.writeObject(temps);
+        guiOutput.flush();
 
     }
 

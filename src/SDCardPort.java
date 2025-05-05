@@ -111,6 +111,11 @@ public class SDCardPort extends Device implements Serializable {
         return true;
     }
 
+//    public boolean writeBallot2SD(Ballot ballot) {
+//        if (failure() || this.mode == SDMode.READ_ONLY) return false;
+//
+//    }
+
     /**
      * readLine will read a single line of data until it hits a newline or the end of the file.
      * @return A string of data, or null for failures.

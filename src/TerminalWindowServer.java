@@ -82,6 +82,11 @@ public class TerminalWindowServer {
                         System.out.println("Ejected Card");
                         break;
 
+                    case "ERASE_CARD":
+                        cardInserted = false;
+                        cardType = "";
+                        cardNumber = "";
+
                     case "":
                         System.out.println("Invalid input");
                         break;

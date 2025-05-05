@@ -13,17 +13,16 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ClientGUI extends Application {
-
+    private ArrayList<Template> templates = new ArrayList<>();
+    private int currentIndex;
+    private ObjectOutputStream oss;
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Voting Machine");
@@ -83,12 +82,13 @@ public class ClientGUI extends Application {
                     Socket client = serverSocket.accept();
                     System.out.println("Accepted connection from " + client.getInetAddress().getHostAddress());
                     try{
-                        ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream());
+                        oss = new ObjectOutputStream(client.getOutputStream());
                         ObjectInputStream os = new ObjectInputStream(client.getInputStream());
                         Object ob = os.readObject();
-                        if (ob instanceof Template) {
-                            Template template = (Template) ob;
-                            setTemplate(header,description,selection,option1,option2,option3,option4,option5,b1,b2,b3,template);
+                        if (ob instanceof ArrayList<?>) {
+                            templates =(ArrayList<Template>) ob;
+                            currentIndex =0;
+                            setTemplate(header,description,selection,option1,option2,option3,option4,option5,b1,b2,b3);
                         }
                         else{
                             System.out.println("fail");
@@ -107,9 +107,10 @@ public class ClientGUI extends Application {
         thread.start();
     }
     private void setTemplate(Label header, Label description, Label selection, Button option1, Button option2,
-                             Button option3, Button option4, Button option5, Button b1, Button b2, Button b3,Template template) {
+                             Button option3, Button option4, Button option5, Button b1, Button b2, Button b3) {
 
         Platform.runLater(() -> {
+            Template template = templates.getFirst();
             header.setText(template.getTitle());
             description.setText(template.getDescription());
 
@@ -123,25 +124,53 @@ public class ClientGUI extends Application {
             }
 
 
-            HashMap<String,Boolean> options = template.getOptions();
-            ArrayList<String> list = new ArrayList<>(options.keySet());
+            ArrayList<String> list = new ArrayList<>(template.getOptions().keySet());
             Button[] buttons = {option1,option2,option3,option4,option5};
 
-            for (int i = 0; i < list.size(); i++) {
-                if(options.get(list.get(i))){
+            for (int i = 0; i < buttons.length; i++) {
+                if(i <list.size()){
                     buttons[i].setText(list.get(i));
                     buttons[i].setManaged(true);
                     buttons[i].setVisible(true);
                     buttons[i].setDisable(false);
+
+                    int index = i;
+                    buttons[i].setOnAction(e->{
+                        buttons[index].setStyle(
+                                "-fx-background-color: gray;" +
+                                        "-fx-border-color: black;" +
+                                        "-fx-border-width: 2px;" +
+                                        "-fx-border-radius: 5px;" +
+                                        "-fx-background-radius: 5px;" +
+                                        "-fx-alignment: center;");
+                        template.getOptions().put(list.get(index),true);
+                        System.out.println("selected");
+                    });
                 }else{
                     buttons[i].setManaged(false);
                     buttons[i].setVisible(false);
                     buttons[i].setDisable(true);
                 }
             }
-            b1.setText("Previous");
-            b2.setText("Confirm");
-            b3.setText("Next");
+            b1.setVisible(currentIndex > 0);
+            b1.setOnAction(e ->{
+                currentIndex--;
+                setTemplate(header,description,selection,option1,option2,option3,option4,option5,b1,b2,b3);
+            });
+            b3.setVisible(currentIndex < templates.size() -1);
+            b3.setOnAction(e ->{
+                currentIndex++;
+                setTemplate(header,description,selection,option1,option2,option3,option4,option5,b1,b2,b3);
+            });
+            b2.setVisible(currentIndex == templates.size());
+            b2.setOnAction(e ->{
+                try {
+                    oss.writeObject(templates);
+                    oss.flush();
+                } catch (IOException ex) {
+                    System.err.println("failed to send template");
+                }
+            });
 
 
         });
