@@ -100,35 +100,35 @@ public class VotingControl {
 
 
 
-    public static void main(String[] args) throws IOException {
-
-        Latch latch = new Latch();
-        Screen screen = new Screen();
-        Printer printer = new Printer();
-        Ballot ballot = new Ballot(new File("resources/markUpExample1.txt"));
-
-        // init all the sd cards
-        SDCardPort sdCardPort1 = new SDCardPort(1, SDMode.WRITE_ONLY);
-        SDCardPort sdCardPort2 = new SDCardPort(2, SDMode.WRITE_ONLY);
-        SDCardPort sdCardPort3 = new SDCardPort(3, SDMode.WRITE_ONLY);
-
-        // init the id card reader and the cardholder
-        IDCardReader idCardReader = new IDCardReader();
-        CardHolder cardHolder = new CardHolder(idCardReader);
-
-        //init the vote process
-        VotingProcess votingProcess = new VotingProcess(screen, ballot);
-
-        VoteRecording voteRecording = new VoteRecording(sdCardPort3, sdCardPort2, printer);
-
-        Battery battery = new Battery();
-
-
-        AdminManager adminManager = new AdminManager(latch, screen);
-        Monitor monitor = new Monitor(latch, sdCardPort1, sdCardPort2, sdCardPort3, screen, printer, battery);
-        VotingManager votingManager = new VotingManager(ballot, voteRecording, votingProcess);
-
-
-        VotingControl vc = new VotingControl(monitor, adminManager ,votingManager ,cardHolder);
-    }
+//    public static void main(String[] args) throws IOException {
+//
+//        Latch latch = new Latch();
+//        Screen screen = new Screen();
+//        Printer printer = new Printer();
+//        Ballot ballot = new Ballot(new File("resources/markUpExample1.txt"));
+//
+//        // init all the sd cards
+//        SDCardPort sdCardPort1 = new SDCardPort(1, SDMode.WRITE_ONLY);
+//        SDCardPort sdCardPort2 = new SDCardPort(2, SDMode.WRITE_ONLY);
+//        SDCardPort sdCardPort3 = new SDCardPort(3, SDMode.WRITE_ONLY);
+//
+//        // init the id card reader and the cardholder
+//        IDCardReader idCardReader = new IDCardReader();
+//        CardHolder cardHolder = new CardHolder(idCardReader);
+//
+//        //init the vote process
+//        VotingProcess votingProcess = new VotingProcess(screen, ballot);
+//
+//        VoteRecording voteRecording = new VoteRecording(sdCardPort3, sdCardPort2, printer);
+//
+//        Battery battery = new Battery();
+//
+//
+//        AdminManager adminManager = new AdminManager(latch, screen);
+//        Monitor monitor = new Monitor(latch, sdCardPort1, sdCardPort2, sdCardPort3, screen, printer, battery);
+//        VotingManager votingManager = new VotingManager(ballot, voteRecording, votingProcess);
+//
+//
+//        VotingControl vc = new VotingControl(monitor, adminManager ,votingManager ,cardHolder);
+//    }
 }

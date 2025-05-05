@@ -12,8 +12,8 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         // init the terminal window server
-        TerminalWindowServer terminalWindowServer = new TerminalWindowServer();
-        ClientGUI clientGUI = new ClientGUI();
+//        TerminalWindowServer terminalWindowServer = new TerminalWindowServer();
+//        ClientGUI clientGUI = new ClientGUI();
 
 
 

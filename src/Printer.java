@@ -116,9 +116,9 @@ public class Printer extends Device implements Serializable {
 
     }
 
-    public static void main(String[] args) throws IOException {
-        Printer printer = new Printer();
-
-
-    }
+//    public static void main(String[] args) throws IOException {
+//        Printer printer = new Printer();
+//
+//
+//    }
 }

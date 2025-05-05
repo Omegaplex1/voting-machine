@@ -16,18 +16,18 @@ public class Monitor {
                    SDCardPort sdCard3, Screen screen,
                    Printer printer, Battery battery) throws IOException {
 
-        this.latch = new Latch(); // the latch
+        this.latch = latch; // the latch
 
         // init all the SD cards
-        this.sdCard1 = new SDCardPort(1, SDMode.WRITE_ONLY);
-        this.sdCard2 = new SDCardPort(2, SDMode.WRITE_ONLY);
-        this.sdCard3 = new SDCardPort(3, SDMode.WRITE_ONLY);
+        this.sdCard1 = sdCard1;
+        this.sdCard2 = sdCard2;
+        this.sdCard3 = sdCard3;
 
         // init screen driver
-        this.screen = new Screen();
+        this.screen = screen;
 
         // init the printerDriver
-        this.printer = new Printer();
+        this.printer = printer;
 
         // init the battery
         this.battery = battery;

@@ -106,7 +106,7 @@ public class Latch extends Device implements Serializable {
         return "OK";
     }
 
-    public static void main(String[] args) throws IOException {
-        Latch latch = new Latch();
-    }
+//    public static void main(String[] args) throws IOException {
+//        Latch latch = new Latch();
+//    }
 }

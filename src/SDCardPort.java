@@ -199,10 +199,10 @@ public class SDCardPort extends Device implements Serializable {
         return "OK";
     }
 
-    public static void main(String[] args) throws IOException {
-        SDCardPort sd1 = new SDCardPort(1, SDMode.READ_ONLY);
-        SDCardPort sd2 = new SDCardPort(2, SDMode.WRITE_ONLY);
-
-    }
+//    public static void main(String[] args) throws IOException {
+//        SDCardPort sd1 = new SDCardPort(1, SDMode.READ_ONLY);
+//        SDCardPort sd2 = new SDCardPort(2, SDMode.WRITE_ONLY);
+//
+//    }
 }
 

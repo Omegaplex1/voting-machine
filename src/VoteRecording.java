@@ -7,7 +7,7 @@ public class VoteRecording {
     private Printer printer;
     private Ballot ballot;
 
-    public VoteRecording(SDCardPort sdCardPort2, SDCardPort sdCardPort3, Printer printer) {
+    public VoteRecording(SDCardPort sdCardPort3, SDCardPort sdCardPort2, Printer printer) {
         this.sdCardPort3 = sdCardPort3;
         this.sdCardPort2 = sdCardPort2;
         this.printer = printer;
@@ -63,15 +63,15 @@ public class VoteRecording {
         sdCardPort3.write(result);
     }
 
-    public static void main(String[] args) throws IOException {
-        SDCardPort p2 = new SDCardPort();
-        SDCardPort p3 = new SDCardPort();
-        Printer printer = new Printer();
-        VoteRecording vr = new VoteRecording(p2, p3, printer);
-
-        Ballot b = new Ballot();
-        vr.setBallot(b);
-        vr.printBallot();
-    }
+//    public static void main(String[] args) throws IOException {
+//        SDCardPort p2 = new SDCardPort();
+//        SDCardPort p3 = new SDCardPort();
+//        Printer printer = new Printer();
+//        VoteRecording vr = new VoteRecording(p2, p3, printer);
+//
+//        Ballot b = new Ballot();
+//        vr.setBallot(b);
+//        vr.printBallot();
+//    }
 
 }

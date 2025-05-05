@@ -159,7 +159,7 @@ public class Screen extends Device implements Serializable {
 
     }
 
-    public static void main(String[] args) throws IOException {
-        Screen screen = new Screen();
-    }
+//    public static void main(String[] args) throws IOException {
+//        Screen screen = new Screen();
+//    }
 }

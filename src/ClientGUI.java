@@ -39,9 +39,9 @@ public class ClientGUI extends Application {
         Button option5 = setOption(new Button(),"option 5");
 
 
-        Button b1 = setButton(new Button(),"Button 1");
-        Button b2 = setButton(new Button(),"Button 2");
-        Button b3 = setButton(new Button(),"Button 3");
+        Button b1 = setButton(new Button(),"Previous");
+        Button b2 = setButton(new Button(),"Confirm");
+        Button b3 = setButton(new Button(),"Next");
 
         GridPane grid = new GridPane();
         grid.setPrefSize(600, 600);
@@ -82,10 +82,20 @@ public class ClientGUI extends Application {
                     Socket client = serverSocket.accept();
                     System.out.println("Accepted connection from " + client.getInetAddress().getHostAddress());
                     try{
+                        System.out.println("After try");
                         oss = new ObjectOutputStream(client.getOutputStream());
                         ObjectInputStream os = new ObjectInputStream(client.getInputStream());
-                        Object ob = os.readObject();
+                        System.out.println("After STREAMS");
+
+                        Object ob;
+                        if ((ob = os.readObject()) != null){
+                            System.out.println("After readObject");
+                        }
+
+                        System.out.println("Got an object" + ob.toString());
+
                         if (ob instanceof ArrayList<?>) {
+                            System.out.println("IN the right place");
                             templates =(ArrayList<Template>) ob;
                             currentIndex =0;
                             setTemplate(header,description,selection,option1,option2,option3,option4,option5,b1,b2,b3);
@@ -129,22 +139,25 @@ public class ClientGUI extends Application {
 
             for (int i = 0; i < buttons.length; i++) {
                 if(i <list.size()){
+                    boolean slected = template.getOptions().get(list.get(i));
                     buttons[i].setText(list.get(i));
                     buttons[i].setManaged(true);
                     buttons[i].setVisible(true);
                     buttons[i].setDisable(false);
 
+                    updateOption(buttons[i],slected);
                     int index = i;
                     buttons[i].setOnAction(e->{
-                        buttons[index].setStyle(
-                                "-fx-background-color: gray;" +
-                                        "-fx-border-color: black;" +
-                                        "-fx-border-width: 2px;" +
-                                        "-fx-border-radius: 5px;" +
-                                        "-fx-background-radius: 5px;" +
-                                        "-fx-alignment: center;");
-                        template.getOptions().put(list.get(index),true);
-                        System.out.println("selected");
+                        boolean current = template.getOptions().get(list.get(index));
+                        int selected = (int) template.getOptions().values().stream().filter(v->v).count();
+                        System.out.println(selected);
+                        if(current){
+                            template.getOptions().put(list.get(index),false );
+                            updateOption(buttons[index],false);
+                        }else if(selected < template.getSelections()){
+                            template.getOptions().put(list.get(index),true);
+                            updateOption(buttons[index],true);
+                        }
                     });
                 }else{
                     buttons[i].setManaged(false);
@@ -162,7 +175,7 @@ public class ClientGUI extends Application {
                 currentIndex++;
                 setTemplate(header,description,selection,option1,option2,option3,option4,option5,b1,b2,b3);
             });
-            b2.setVisible(currentIndex == templates.size());
+            b2.setVisible(currentIndex == templates.size() - 1);
             b2.setOnAction(e ->{
                 try {
                     oss.writeObject(templates);
@@ -202,6 +215,7 @@ public class ClientGUI extends Application {
         description.setPrefHeight(150);
         description.setText("Description of Proposition Here");
         description.setAlignment(Pos.CENTER);
+        description.setWrapText(true);
         description.setFont(Font.font("System", FontWeight.BOLD,24));
         description.setStyle( "-fx-background-color: lightyellow;" +
                 "-fx-border-color: black;" +
@@ -253,5 +267,24 @@ public class ClientGUI extends Application {
                         "-fx-background-radius: 5px;" +
                         "-fx-alignment: center;");
         return b1;
+    }
+    private void updateOption(Button option,Boolean selected){
+        if(!selected){
+            option.setStyle(
+                    "-fx-background-color: gray;" +
+                            "-fx-border-color: black;" +
+                            "-fx-border-width: 2px;" +
+                            "-fx-border-radius: 5px;" +
+                            "-fx-background-radius: 5px;" +
+                            "-fx-alignment: center;");
+        }else{
+            option.setStyle(
+                    "-fx-background-color: lightblue;" +
+                            "-fx-border-color: black;" +
+                            "-fx-border-width: 2px;" +
+                            "-fx-border-radius: 5px;" +
+                            "-fx-background-radius: 5px;" +
+                            "-fx-alignment: center;");
+        }
     }
 }

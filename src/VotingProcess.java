@@ -7,18 +7,16 @@ public class VotingProcess {
     private Ballot ballot;
 
 
-    public VotingProcess(Screen screen, Ballot ballot) throws IOException {
+    public VotingProcess(Screen screen, Ballot ballot) {
         this.screen = screen;
         this.ballot = ballot;
-        ArrayList<Template> temps = getTemplate();
-        screen.sendTempArrays(temps);
     }
     private ArrayList<Template> getTemplate(){
         ArrayList<Template> temps = new ArrayList<>();
         for(int i = 0; i < ballot.getSize();i++){
             Proposition temp = ballot.getPropositionAtIndex(i);
             HashMap<String,Boolean> options = getHashMap(temp);
-            temps.add(new Template(temp.getTitle(),temp.getDescription(),temp.getNumberOfSelections(),options);
+            temps.add(new Template(temp.getTitle(),temp.getDescription(),temp.getNumberOfSelections(),options));
         }
         return temps;
     }
@@ -29,9 +27,14 @@ public class VotingProcess {
         }
         return options;
     }
+    public void giveTemplate() throws IOException {
+        ArrayList<Template> temps = getTemplate();
+        screen.sendTempArrays(temps);
+    }
 
     public static void main(String args[]) throws IOException {
         VotingProcess main = new VotingProcess(new Screen(),new Ballot());
+        main.giveTemplate();
 
     }
 }
