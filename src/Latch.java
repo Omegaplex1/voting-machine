@@ -1,4 +1,8 @@
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.Socket;
 
 /**
  * Latch.java
@@ -11,6 +15,44 @@ public class Latch extends Device implements Serializable {
     private boolean isLocked = false;
     // Determines whether the latch failed
     private boolean failed = false;
+    private Socket socket;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
+
+
+    public Latch() throws IOException {
+        this.socket = new Socket("localhost", 5001);
+        this.out = new ObjectOutputStream(socket.getOutputStream());
+        this.in = new ObjectInputStream(socket.getInputStream());
+
+        out.writeObject("Latch");
+        out.flush();
+
+        // start thread to listen for failure messages
+        new Thread(() -> {
+            try {
+                waitForFailureMessages(in);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+    }
+
+    /**
+     * Method to wait for failure messages
+     * @param in ..
+     */
+    private void waitForFailureMessages(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        while (true){
+            String failureMessage = (String) in.readObject();
+            if (failureMessage.equals("Failure")){
+                failed = true;
+            }
+        }
+    }
+
 
     // Activates the latch
     void lock() {
@@ -62,5 +104,9 @@ public class Latch extends Device implements Serializable {
         }
 
         return "OK";
+    }
+
+    public static void main(String[] args) throws IOException {
+        Latch latch = new Latch();
     }
 }

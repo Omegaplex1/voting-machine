@@ -1,13 +1,52 @@
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.nio.file.Paths;
 
-public class Printer extends Device implements Serializable {
 
+public class Printer extends Device implements Serializable {
     boolean failure = false;
+    private Socket socket;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
+
+    public Printer() throws IOException {
+        this.socket = new Socket("localhost", 5001);
+        this.out = new ObjectOutputStream(socket.getOutputStream());
+        this.in = new ObjectInputStream(socket.getInputStream());
+
+        out.writeObject("Printer");
+        out.flush();
+
+        // start a new thread for listening to messages
+        new Thread(() -> {
+            try {
+                listenForMessages(in);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+
+        this.print("HELLO FROM THE OTHER SIIIIIIIIDE");
+
+    }
+
+    // method to listen for messages
+    public void listenForMessages(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        while(true){
+            String input = (String) in.readObject();
+
+            if (input.equals("failure")) {
+                System.out.println("(In Printer) Failure initiiated by the USER ");
+                failure = true;
+            }
+        }
+    }
 
     public void print(String text) {
+
         String filePrefix = "printPaper";
         String fileSuffix = ".txt";
         try {
@@ -39,6 +78,7 @@ public class Printer extends Device implements Serializable {
             failure = true;
         }
     }
+
 
     @Override
     public boolean failure() {
@@ -76,6 +116,13 @@ public class Printer extends Device implements Serializable {
         }
 
         return "OK";
+
+    }
+
+    public static void main(String[] args) throws IOException {
+        Printer printer = new Printer();
+
+        printer.print("HELLO");
 
     }
 }

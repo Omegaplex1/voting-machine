@@ -1,81 +1,46 @@
-/**
- * Template.java
- * <p>
- * This will act as the main template for every screen of the voting machine.
- * It contains just enough data to construct a full voting screen.
- */
 
 import java.io.Serializable;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 
 public class Template implements Serializable {
-    public String majorHeading;
-    public String descHeading;
-    public int selectionCount;
-    public Selection[] selections;
-    public TemplateButton[] buttons;
+    private String title;
+    private String description;
+    private int selections;
+    private HashMap<String, Boolean> options = new HashMap<>();
+    private String who;
 
+    public Template(String who,String title, String description, int selections,HashMap<String,Boolean> options) {
+        this.who = who;
+        this.title = title;
+        this.description = description;
+        this.selections = selections;
+        this.options = options;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    public String title;
-//    public String description;
-////    public String[] selections;
-//    public boolean[] buttons;
-//    // The user's selected vote
-//    public String vote;
-
-    /**
-     * Template that can be sent over the socket
-     * @param title Election race title
-     * @param description race description
-     * @param selections candidate selection strings
-     * @param buttons bool array of length 3. buttons = [hasBackButton, hasSubmitButton, hasNextButton]
-     */
-    public Template(String title, String description, String[] selections, boolean[] buttons) {
-        try {
-            this.title = title;
-            this.description = description;
-            this.selections = selections;
-            this.buttons = buttons;
-            if (title.isEmpty()) {
-                throw new IllegalArgumentException("title length must be at least 1");
-            }
-            if (description.isEmpty()) {
-                throw new IllegalArgumentException("description length must be at least 1");
-            }
-            if (selections.length < 1 || selections.length > 5) {
-                throw new IllegalArgumentException("selections length must be at least 1 and less than 6");
-            }
-            if (buttons.length != 3) {
-                throw new IllegalArgumentException("buttons array must be of length 3!");
-            }
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            this.title = null;
-            this.description = null;
-            this.selections = null;
-            this.buttons = null;
-        }
+    }
+    public Template(String device){
+        this.title = "Failure occured with " + device;
+        this.description = "Please sellect and option below";
+        this.selections = 0;
+        this.options = new HashMap<>();
+        options.put("Power Down",false);
+        options.put("Suspend",false);
     }
 
-    @Override
-    public String toString() {
-        return "Template for: " + title;
+    public String getTitle() {
+        return title;
     }
+    public String getDescription() {
+        return description;
+    }
+    public int getSelections() {
+        return selections;
+    }
+    public HashMap<String,Boolean> getOptions() {
+        return options;
+    }
+
 
 }

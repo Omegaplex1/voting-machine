@@ -1,4 +1,8 @@
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.Socket;
 
 /**
  * Battery.java
@@ -6,8 +10,46 @@ import java.io.Serializable;
  * A battery device simulator that shows whether the battery is on.
  */
 public class Battery extends Device implements Serializable {
+
+    private Socket socket;
+    private ObjectOutputStream out;
+    private ObjectInputStream in;
     // Determines whether there is battery life left
     private boolean isOn = true;
+
+    public Battery() throws IOException {
+        this.socket = new Socket("localhost", 5001);
+        this.out = new ObjectOutputStream(socket.getOutputStream());
+        this.in = new ObjectInputStream(socket.getInputStream());
+
+        out.writeObject("Battery");
+        out.flush();
+
+        // start thread to listen for failure messages
+        new Thread(() -> {
+            try {
+                waitForFailureMessages(in);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+    }
+
+    /**
+     * Method to wait for failure messages
+     * @param in
+     */
+    private void waitForFailureMessages(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        while (true){
+            String failureMessage = (String) in.readObject();
+            if (failureMessage.equals("Failure")){
+                isOn = false;
+            }
+        }
+    }
+
 
     /**
      * Battery failure: Determines if there is battery life left or if there was an error of any type
@@ -39,5 +81,11 @@ public class Battery extends Device implements Serializable {
         }
 
         return "OK";
+    }
+
+    public static void main(String[] args) throws IOException {
+        Battery battery = new Battery();
+
+
     }
 }

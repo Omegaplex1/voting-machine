@@ -1,4 +1,5 @@
 import java.io.*;
+import java.net.Socket;
 import java.nio.file.Paths;
 
 /**
@@ -20,6 +21,12 @@ public class SDCardPort extends Device implements Serializable {
     private PrintWriter writingStream = null;
     private BufferedReader readingStream = null;
 
+    private Socket socket;
+    private ObjectOutputStream outputStream;
+    private ObjectInputStream inputStream;
+
+
+
     SDCardPort() {
         slot = -1;
         mode = null;
@@ -28,10 +35,41 @@ public class SDCardPort extends Device implements Serializable {
         isOpened = false;
     }
 
-    SDCardPort(int slot, SDMode mode) {
+    public SDCardPort(int slot, SDMode mode) throws IOException {
         this.slot = slot;
         this.mode = mode;
         this.isOpened = openSDFile();
+
+        this.socket = new Socket("localhost", 5001);
+        this.outputStream = new ObjectOutputStream(socket.getOutputStream());
+        this.inputStream = new ObjectInputStream(socket.getInputStream());
+
+        outputStream.writeObject("SDCardPort" + slot);
+        outputStream.flush();
+
+        // start thread to listen for failure messages
+        new Thread(() -> {
+            try {
+                waitForFailureMessages(inputStream);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
+    }
+
+    /**
+     * Method to wait for failure messages
+     * @param in ..
+     */
+    private void waitForFailureMessages(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        while (true){
+            String failureMessage = (String) in.readObject();
+            if (failureMessage.equals("Failure")){
+                isOpened = true;
+            }
+        }
     }
 
     // Open the file for reading or writing to the sd
@@ -154,6 +192,12 @@ public class SDCardPort extends Device implements Serializable {
         }
 
         return "OK";
+    }
+
+    public static void main(String[] args) throws IOException {
+        SDCardPort sd1 = new SDCardPort(1, SDMode.READ_ONLY);
+        SDCardPort sd2 = new SDCardPort(2, SDMode.WRITE_ONLY);
+
     }
 }
 

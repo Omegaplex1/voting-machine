@@ -1,4 +1,8 @@
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.net.Socket;
 
 /**
     Expected behavior of the ID Card
@@ -35,14 +39,27 @@ public class IDCardReader extends Device implements Serializable {
     private boolean failure;
     private boolean cardPresent;
     boolean erased;
+    private Socket socket;
+    private ObjectOutputStream output;
+    private ObjectInputStream input;
+
 
 
     private IDCardDetails currentCard;
 
-    public IDCardReader(){
+    public IDCardReader() throws IOException {
         failure = false;
         cardPresent = false;
         erased = false;
+
+        this.socket = new Socket("localhost", 5001);
+
+        this.output = new ObjectOutputStream(socket.getOutputStream());
+        this.input = new ObjectInputStream(socket.getInputStream());
+
+        output.writeObject("IDCardReader");
+        output.flush();
+
     }
 
     public boolean cardInserted(){
@@ -72,39 +89,102 @@ public class IDCardReader extends Device implements Serializable {
     }
 
     /**
-     * Gets card type. May return null if there is no card inserted.
-     *
-     * @author  Ira Khan
-     * @return  card type if card is present
-     *          null otherwise
+     * Method to check if the card is inserted
+     * @return true if a card is inserted false if not
+     * @throws IOException ..
+     * @throws ClassNotFoundException ..
      */
-    public char getCardType(){
-        if (cardPresent){
-            return currentCard.cardType();
-        }
-        failure = true;
-        throw new RuntimeException("ERR - Get Card Type: No card present");
+    public boolean checkForCard() throws IOException, ClassNotFoundException {
+        output.writeObject("CARD_INSERTED");
+        output.flush();
+
+        boolean cardInserted = (boolean) input.readObject();
+        System.out.println("CardInserted Status: " + cardInserted);
+
+        // update the status
+        cardPresent = cardInserted;
+        return cardInserted;
     }
 
     /**
-     * Gets card number. May return null if there is no card inserted.
-     *
-     * @author  Ira Khan
-     * @return  card type if card is present
-     *          null otherwise
+     * Method to get the card type from the terminal window
+     * @return 'N' for no card 'A' for admin and 'V' for voter
+     * @throws IOException ..
+     * @throws ClassNotFoundException ..
      */
-    public int getCardNumber(){
-        if (cardPresent) {
-            return currentCard.cardNumber();
+    public String getCardType() throws IOException, ClassNotFoundException {
+        String cardType = "N";
+        if (cardPresent){
+            output.writeObject("CARD_TYPE");
+            output.flush();
+
+            cardType = (String) input.readObject();
         }
-        failure = true;
-        throw new RuntimeException("ERR - Get Card Number: No card present");
+
+        System.out.println("CardType Status: " + cardType);
+        return cardType;
     }
 
-    public void eraseCard(){
-        currentCard = new IDCardDetails(-1,'N');
-        erased = true;
+    /**
+     * Method to return the card number
+     * @return card number or "" for none
+     * @throws IOException ..
+     * @throws ClassNotFoundException ..
+     */
+    public String getCardNumber() throws IOException, ClassNotFoundException {
+        String cardNumber = "";
+        if (cardPresent){
+            output.writeObject("CARD_NUMBER");
+            output.flush();
+
+            cardNumber = (String) input.readObject();
+        }
+
+        System.out.println("CardNumber Status: " + cardNumber);
+        return cardNumber;
     }
+
+    public void eraseCard() throws IOException {
+        if (cardPresent){
+            output.writeObject("EJECT_CARD");
+            output.flush();
+        }
+    }
+
+//    /**
+//     * Gets card type. May return null if there is no card inserted.
+//     *
+//     * @author  Ira Khan
+//     * @return  card type if card is present
+//     *          null otherwise
+//     */
+//    public char getCardType(){
+//        if (cardPresent){
+//            return currentCard.cardType();
+//        }
+//        failure = true;
+//        throw new RuntimeException("ERR - Get Card Type: No card present");
+//    }
+//
+//    /**
+//     * Gets card number. May return null if there is no card inserted.
+//     *
+//     * @author  Ira Khan
+//     * @return  card type if card is present
+//     *          null otherwise
+//     */
+//    public int getCardNumber(){
+//        if (cardPresent) {
+//            return currentCard.cardNumber();
+//        }
+//        failure = true;
+//        throw new RuntimeException("ERR - Get Card Number: No card present");
+//    }
+
+//    public void eraseCard(){
+//        currentCard = new IDCardDetails(-1,'N');
+//        erased = true;
+//    }
 
     public IDCardDetails ejectCard(){
         //Do NOT return the card if it is not erased.
@@ -132,13 +212,21 @@ public class IDCardReader extends Device implements Serializable {
      */
     @Override
     public boolean failure(){
-        eraseCard();
+        try {
+            eraseCard();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return failure;
     }
 
     @Override
     public void simulateFailure() {
-        eraseCard();
+        try {
+            eraseCard();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         this.failure = true;
         System.err.println("ID Failure.");
     }
@@ -154,7 +242,11 @@ public class IDCardReader extends Device implements Serializable {
                 return "OK " + ejectCard().toString();
             }
             case "eraseCard": {
-                eraseCard();
+                try {
+                    eraseCard();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             }
             case "readCard": {
@@ -162,10 +254,22 @@ public class IDCardReader extends Device implements Serializable {
                 break;
             }
             case "getCardNumber": {
-                return "OK " + getCardNumber();
+                try {
+                    return "OK " + getCardNumber();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
             }
             case "getCardType": {
-                return "OK " + getCardType();
+                try {
+                    return "OK " + getCardType();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
             }
             case "simulateFailure": {
                 simulateFailure();
@@ -177,5 +281,22 @@ public class IDCardReader extends Device implements Serializable {
         }
 
         return "OK";
+    }
+
+    public static void main(String[] args) throws IOException, InterruptedException, ClassNotFoundException {
+        IDCardReader idCardReader = new IDCardReader();
+
+        while (true){
+//            System.out.println("Checking for a card");
+            idCardReader.checkForCard();
+            idCardReader.getCardType();
+            idCardReader.getCardNumber();
+//            System.out.println("Waiting for one second ");
+            Thread.sleep(1000);
+
+            idCardReader.eraseCard();
+        }
+
+
     }
 }
