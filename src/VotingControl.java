@@ -31,18 +31,27 @@ public class VotingControl {
             }
         }).start();
 
-        new Thread(() -> mainHandlingLoop()).start();
+
+        new Thread(() -> {
+            try {
+                mainHandlingLoop();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
 
     }
 
     /**
      * Method to constantly check if a card has been inserted.
      */
-    private void mainHandlingLoop(){
+    private void mainHandlingLoop() throws IOException, ClassNotFoundException {
         while (true){
-            if (card.cardDetected()){
+            if (card.checkCard()){
                 String cardT = card.getCardType();
-                int cardNum = card.getCardNumber();
+                long cardNum = card.getCardNumber();
 
                 System.out.println("Card Detected: " + cardT + " (" + cardNum + ") ");
                 // 1st admin

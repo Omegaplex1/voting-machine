@@ -4,7 +4,7 @@ public class CardHolder {
     private IDCardReader idCardReader;
     private boolean isCardDetected = false;
     private String cardType = "";
-    private int cardNumber = 0;
+    private long cardNumber = 0;
 
     public CardHolder(IDCardReader idCardReader) {
         this.idCardReader = idCardReader;
@@ -18,7 +18,7 @@ public class CardHolder {
         return isCardDetected;
     }
 
-    public int getCardNumber() {
+    public long getCardNumber() {
         return cardNumber;
     }
     public String getCardType() {
@@ -35,7 +35,7 @@ public class CardHolder {
         if (idCardReader.checkForCard()){
             this.isCardDetected = true;
             this.cardType = idCardReader.getCardType();
-            this.cardNumber = Integer.parseInt(idCardReader.getCardNumber());
+            this.cardNumber = Long.parseLong(idCardReader.getCardNumber());
             return true;
         }
         return false;
