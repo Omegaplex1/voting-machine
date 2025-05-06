@@ -35,7 +35,7 @@ public class Printer extends Device implements Serializable {
         while(true){
             String input = (String) in.readObject();
 
-            if (input.equals("failure")) {
+            if (input.equals("Fail")) {
                 System.out.println("(In Printer) Failure initiiated by the USER ");
                 failure = true;
             }

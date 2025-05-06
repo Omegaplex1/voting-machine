@@ -9,6 +9,7 @@
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class Screen extends Device implements Serializable {
@@ -59,17 +60,40 @@ public class Screen extends Device implements Serializable {
             }
         }).start();
 
+
+//        new Thread(() -> {
+//            try {
+//                waitForGUIMessage(guiInput);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            } catch (ClassNotFoundException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }).start();
+
     }
 
 
     public void waitForFailureMessage(ObjectInputStream in) throws IOException, ClassNotFoundException {
         String line;
         while ((line = (String) in.readObject()) != null){
-            if (line.equals("failure")){
+            if (line.equals("Fail")){
                 failure = true;
             }
         }
     }
+
+//    public void waitForGUIMessage(ObjectInputStream in) throws IOException, ClassNotFoundException {
+//        Object line;
+//        while ((line = in.readObject()) != null){
+//            if (line instanceof ArrayList<?>){
+//                ArrayList<Template> templates = (ArrayList<Template>) line;
+//                for (Template t : templates){
+//                    System.out.println("template " + t.getTitle());
+//                }
+//            }
+//        }
+//    }
 
     //TODO Implement the methods from Dr. Roman's API
 
@@ -125,9 +149,18 @@ public class Screen extends Device implements Serializable {
     /**
      * Method to set the failure screen from the admin manager
      */
-    public void setFailureScreen(){
+    public void setFailureScreen() throws IOException {
         System.out.println("(In Admin Manager) Setting the failure screen.");
+        // todo implement this
+        HashMap<String, Boolean> hm = new HashMap<>();
+        hm.put("ShutDown the Machine Now", false);
+        hm.put("ShutDown the Machine Later", false);
+        Template temp = new Template("Failure", "There has been a Failure detected", 1, hm);
+        guiOutput.writeObject(temp);
+        guiOutput.flush();
     }
+
+
     @Override
     public String handleCommand(Command cmd) {
         if (cmd.deviceType() != DeviceType.SCREEN) {
@@ -153,10 +186,24 @@ public class Screen extends Device implements Serializable {
 
     }
 
-    public void sendTempArrays(ArrayList<Template> temps) throws IOException {
+    public ArrayList<Template> presentTemplate(ArrayList<Template> temps) throws IOException, ClassNotFoundException {
         guiOutput.writeObject(temps);
         guiOutput.flush();
 
+
+        // wait for a message back here
+        Object line;
+        ArrayList<Template> templates = new ArrayList<>();
+        if ((line = guiInput.readObject()) != null){
+            if (line instanceof ArrayList<?>){
+                templates = (ArrayList<Template>) line;
+                for (Template t : templates){
+                    System.out.println("template " + t.getTitle());
+                }
+            }
+        }
+
+        return templates;
     }
 
 //    public static void main(String[] args) throws IOException {

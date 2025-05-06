@@ -47,7 +47,7 @@ public class CardHolder {
      * @throws ClassNotFoundException ..
      */
     public void ejectCard() throws IOException, ClassNotFoundException {
-        idCardReader.ejectCard();
+        idCardReader.ejectCard1();
         isCardDetected = false;
         cardType = "";
         cardNumber = 0;

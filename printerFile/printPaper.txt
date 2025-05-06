@@ -1,13 +1,240 @@
-Best Manager
-Which team member has done the best at managing the others?
+Presidential Election
+General Election for the president of the United States of America
 Options:
-Greg
-Martin
-Robbie
-Jesus
+Bernie Sanders
+Donald Trump
+Kamala Harris
 
 You voted for:
-Greg
+Bernie Sanders
+
+
+
+Most Controversial Celebrity
+General Election for the most controversial public figure
+Options:
+Kanye West
+Elon Musk
+Alex Jones
+
+You voted for:
+Kanye West
+
+
+
+Presidential Election
+General Election for the president of the United States of America
+Options:
+Bernie Sanders
+Donald Trump
+Kamala Harris
+
+You voted for:
+Bernie Sanders
+
+
+
+Most Controversial Celebrity
+General Election for the most controversial public figure
+Options:
+Kanye West
+Elon Musk
+Alex Jones
+
+You voted for:
+Elon Musk
+
+
+
+Presidential Election
+General Election for the president of the United States of America
+Options:
+Bernie Sanders
+Donald Trump
+Kamala Harris
+
+You voted for:
+Bernie Sanders
+
+
+
+Most Controversial Celebrity
+General Election for the most controversial public figure
+Options:
+Kanye West
+Elon Musk
+Alex Jones
+
+You voted for:
+Kanye West
+
+
+
+Presidential Election
+General Election for the president of the United States of America
+Options:
+Bernie Sanders
+Donald Trump
+Kamala Harris
+
+You voted for:
+Donald Trump
+
+
+
+Most Controversial Celebrity
+General Election for the most controversial public figure
+Options:
+Kanye West
+Elon Musk
+Alex Jones
+
+You voted for:
+Alex Jones
+
+
+
+Presidential Election
+General Election for the president of the United States of America
+Options:
+Bernie Sanders
+Donald Trump
+Kamala Harris
+
+You voted for:
+Bernie Sanders
+
+
+
+Most Controversial Celebrity
+General Election for the most controversial public figure
+Options:
+Kanye West
+Elon Musk
+Alex Jones
+
+You voted for:
+Kanye West
+
+
+
+Presidential Election
+General Election for the president of the United States of America
+Options:
+Bernie Sanders
+Donald Trump
+Kamala Harris
+
+You voted for:
+Bernie Sanders
+
+
+
+Most Controversial Celebrity
+General Election for the most controversial public figure
+Options:
+Kanye West
+Elon Musk
+Alex Jones
+
+You voted for:
+Kanye West
+
+
+
+Presidential Election
+General Election for the president of the United States of America
+Options:
+Bernie Sanders
+Donald Trump
+Kamala Harris
+
+You voted for:
+Kamala Harris
+
+
+
+Most Controversial Celebrity
+General Election for the most controversial public figure
+Options:
+Kanye West
+Elon Musk
+Alex Jones
+
+You voted for:
+Elon Musk
+
+
+
+Presidential Election
+General Election for the president of the United States of America
+Options:
+Bernie Sanders
+Donald Trump
+Kamala Harris
+
+You voted for:
+Bernie Sanders
+
+
+
+Most Controversial Celebrity
+General Election for the most controversial public figure
+Options:
+Kanye West
+Elon Musk
+Alex Jones
+
+You voted for:
+Kanye West
+
+
+
+Presidential Election
+General Election for the president of the United States of America
+Options:
+Bernie Sanders
+Donald Trump
+Kamala Harris
+
+You voted for:
+Donald Trump
+
+
+
+Most Controversial Celebrity
+General Election for the most controversial public figure
+Options:
+Kanye West
+Elon Musk
+Alex Jones
+
+You voted for:
+Elon Musk
+
+
+
+Presidential Election
+General Election for the president of the United States of America
+Options:
+Bernie Sanders
+Donald Trump
+Kamala Harris
+
+You voted for:
+Kamala Harris
+
+
+
+Most Controversial Celebrity
+General Election for the most controversial public figure
+Options:
+Kanye West
+Elon Musk
+Alex Jones
+
+You voted for:
+Alex Jones
 
 
 

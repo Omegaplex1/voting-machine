@@ -3,6 +3,9 @@ import java.io.Serializable;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.OptionalLong;
+import java.util.stream.Collectors;
 
 
 public class Template implements Serializable {
@@ -39,6 +42,16 @@ public class Template implements Serializable {
     public HashMap<String,Boolean> getOptions() {
         return options;
     }
+    public OptionsList getOptionsList() {
+        ArrayList<String> list = new ArrayList<>(options.keySet());
+        int howMany = selections;
+        OptionsList temp = new OptionsList(list,selections);
+        for(int i = 0;i < options.size();i++){
+            temp.fillboolean(i,options.get(list.get(i)));
+        }
+        return temp;
+
+   }
     public int getIndex() {
         return index;
     }

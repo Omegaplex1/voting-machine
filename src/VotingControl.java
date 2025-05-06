@@ -28,6 +28,8 @@ public class VotingControl {
                 readMessages();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }).start();
 
@@ -49,23 +51,25 @@ public class VotingControl {
      */
     private void mainHandlingLoop() throws IOException, ClassNotFoundException {
         while (true){
-            if (card.checkCard()){
+            if (card.checkCard() && !votingManager.isVotingInProgress()){
                 String cardT = card.getCardType();
                 long cardNum = card.getCardNumber();
 
                 System.out.println("Card Detected: " + cardT + " (" + cardNum + ") ");
                 // 1st admin
                 if (cardT.equals("A")){
-
+                    System.out.println("Here SFJNUGFIBNGUIBNGNUGNJUGOIKNGOI");
+                    this.votingManager.getVotingProcess().getScreen().setFailureScreen();
+                    break;
                 }
                 // 2nd "Voter"
                 else {
+                    // start the voting process
                     votingManager.startVoting();
-                    System.out.println("Starting the voting process");
+//                    System.out.println("Starting the voting process");
+                    card.ejectCard();
+                    System.out.println("CARD IS EJECTED");
                 }
-            }
-            else {
-                System.out.println("No card detected");
             }
         }
     }
@@ -74,7 +78,7 @@ public class VotingControl {
      * Method to constantly read in messages
      * @throws InterruptedException ..
      */
-    private void readMessages() throws InterruptedException {
+    private void readMessages() throws InterruptedException, IOException {
         while (true){
             String currentMessage  = (String) messages.take();
             handleMessage(currentMessage);
@@ -85,16 +89,17 @@ public class VotingControl {
      * Method to handle a message from monitor specifically
      * @param message ..
      */
-    private void handleMessage(String message){
+    private void handleMessage(String message) throws IOException {
         System.out.println("This is the current message: " + message);
 
         switch (message){
             case "Failure":
+                if (votingManager.isVotingInProgress()){
+                    votingManager.setVotingInProgress(false);
+                }
                 System.out.println("This is the failure message");
                 admin.handleFailure("Device Failure");
-                break;
-            case "Success":
-                System.out.println("Successfully voted");
+
                 break;
         }
     }

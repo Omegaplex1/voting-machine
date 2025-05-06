@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 public class AdminManager {
 
     private Latch latch;
@@ -9,7 +11,7 @@ public class AdminManager {
         this.screen = screen;
     }
 
-    public void handleFailure(String failure){
+    public void handleFailure(String failure) throws IOException {
         System.out.println("(In Admin Manager) This is the failure: " + failure);
 
         // set the failure screen

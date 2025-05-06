@@ -47,7 +47,7 @@ public class Latch extends Device implements Serializable {
     private void waitForFailureMessages(ObjectInputStream in) throws IOException, ClassNotFoundException {
         while (true){
             String failureMessage = (String) in.readObject();
-            if (failureMessage.equals("Failure")){
+            if (failureMessage.equals("Fail")){
                 failed = true;
             }
         }

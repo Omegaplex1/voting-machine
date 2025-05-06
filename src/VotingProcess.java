@@ -4,14 +4,17 @@ import java.util.HashMap;
 
 public class VotingProcess {
     private Screen screen;
-    private Ballot ballot;
 
 
-    public VotingProcess(Screen screen, Ballot ballot) {
+    public VotingProcess(Screen screen) {
         this.screen = screen;
-        this.ballot = ballot;
     }
-    private ArrayList<Template> getTemplate(){
+
+    public Screen getScreen() {
+        return screen;
+    }
+
+    private ArrayList<Template> getTemplate(Ballot ballot){
         ArrayList<Template> temps = new ArrayList<>();
         for(int i = 0; i < ballot.getSize();i++){
             Proposition temp = ballot.getPropositionAtIndex(i);
@@ -20,21 +23,41 @@ public class VotingProcess {
         }
         return temps;
     }
+
+
     private HashMap<String,Boolean> getHashMap(Proposition p){
         HashMap<String,Boolean> options = new HashMap<>();
         for(int i = 0; i < p.getOptions().getOptions().size();i++){
-            options.put(p.getOptions().getOptions().get(i),true);
+            options.put(p.getOptions().getOptions().get(i),false);
         }
         return options;
     }
-    public void giveTemplate() throws IOException {
-        ArrayList<Template> temps = getTemplate();
-        screen.sendTempArrays(temps);
+
+    public Ballot getEmptyBallot(ArrayList<Template> templates){
+        ArrayList<Proposition> props = new ArrayList<>();
+
+        for(Template template : templates){
+            Proposition prop = new Proposition(
+                    template.getTitle(),
+                    template.getDescription(),
+                    template.getOptionsList(),
+                    template.getSelections());
+            props.add(prop);
+        }
+        Ballot ballot = new Ballot(props);
+        return ballot;
     }
 
-    public static void main(String args[]) throws IOException {
-        VotingProcess main = new VotingProcess(new Screen(),new Ballot());
-        main.giveTemplate();
+    public ArrayList<Template>giveTemplate(Ballot ballot) throws IOException, ClassNotFoundException {
+        ArrayList<Template> temps = getTemplate(ballot);
+        ArrayList<Template> newTemps = screen.presentTemplate(temps);
+
+        return newTemps;
+    }
+
+    public static void main(String args[]) throws IOException, ClassNotFoundException {
+        VotingProcess main = new VotingProcess(new Screen());
+        main.giveTemplate(new Ballot());
 
     }
 }

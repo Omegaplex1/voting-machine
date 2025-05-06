@@ -44,7 +44,7 @@ public class SDCardPort extends Device implements Serializable {
         this.outputStream = new ObjectOutputStream(socket.getOutputStream());
         this.inputStream = new ObjectInputStream(socket.getInputStream());
 
-        outputStream.writeObject("SDCardPort" + slot);
+        outputStream.writeObject("SDCard" + slot);
         outputStream.flush();
 
         // start thread to listen for failure messages
@@ -66,8 +66,8 @@ public class SDCardPort extends Device implements Serializable {
     private void waitForFailureMessages(ObjectInputStream in) throws IOException, ClassNotFoundException {
         while (true){
             String failureMessage = (String) in.readObject();
-            if (failureMessage.equals("Failure")){
-                isOpened = true;
+            if (failureMessage.equals("Fail")){
+                isOpened = false;
             }
         }
     }

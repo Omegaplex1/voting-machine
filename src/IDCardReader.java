@@ -109,7 +109,7 @@ public class IDCardReader extends Device implements Serializable {
         output.flush();
 
         boolean cardInserted = (boolean) input.readObject();
-        System.out.println("CardInserted Status: " + cardInserted);
+//        System.out.println("CardInserted Status: " + cardInserted);
 
         // update the status
         cardPresent = cardInserted;
@@ -131,7 +131,7 @@ public class IDCardReader extends Device implements Serializable {
             cardType = (String) input.readObject();
         }
 
-        System.out.println("CardType Status: " + cardType);
+//        System.out.println("CardType Status: " + cardType);
         return cardType;
     }
 
@@ -150,7 +150,7 @@ public class IDCardReader extends Device implements Serializable {
             cardNumber = (String) input.readObject();
         }
 
-        System.out.println("CardNumber Status: " + cardNumber);
+//        System.out.println("CardNumber Status: " + cardNumber);
         return cardNumber;
     }
 

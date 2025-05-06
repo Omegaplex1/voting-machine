@@ -23,16 +23,17 @@ public class ClientGUI extends Application {
     private ArrayList<Template> templates = new ArrayList<>();
     private int currentIndex;
     private ObjectOutputStream oss;
+    private int selected;
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Voting Machine");
+
 
         Label header = setLabel(new Label());
         Label description = setDescription(new Label());
         Label selection = setSelection(new Label());
 
         Button option1 = setOption(new Button(),"option 1");
-
         Button option2 = setOption(new Button(),"option 2");
         Button option3 = setOption(new Button(),"option 3");
         Button option4 = setOption(new Button(),"option 4");
@@ -85,23 +86,23 @@ public class ClientGUI extends Application {
                         System.out.println("After try");
                         oss = new ObjectOutputStream(client.getOutputStream());
                         ObjectInputStream os = new ObjectInputStream(client.getInputStream());
-                        System.out.println("After STREAMS");
-
                         Object ob;
-                        if ((ob = os.readObject()) != null){
-                            System.out.println("After readObject");
-                        }
+                        while((ob = os.readObject()) != null) {
 
-                        System.out.println("Got an object" + ob.toString());
 
-                        if (ob instanceof ArrayList<?>) {
-                            System.out.println("IN the right place");
-                            templates =(ArrayList<Template>) ob;
-                            currentIndex =0;
-                            setTemplate(header,description,selection,option1,option2,option3,option4,option5,b1,b2,b3);
-                        }
-                        else{
-                            System.out.println("fail");
+                            System.out.println("Got an object" + ob.toString());
+
+                            if (ob instanceof ArrayList<?>) {
+                                System.out.println("IN the right place");
+                                templates = (ArrayList<Template>) ob;
+                                currentIndex = 0;
+                                setTemplate(header, description, selection, option1, option2, option3, option4, option5, b1,b2,b3);
+                            } else if (ob instanceof Template) {
+                                System.out.println("Got template");
+                                Template temp = (Template) ob;
+                                setFailTemplate(header, description, selection, option1, option2, option3, option4, option5, b1, b2, b3, temp);
+                            }
+                            System.out.println("Not in If statemenet");
                         }
 
                     } catch (ClassNotFoundException | IOException e) {
@@ -120,8 +121,9 @@ public class ClientGUI extends Application {
                              Button option3, Button option4, Button option5, Button b1, Button b2, Button b3) {
 
         Platform.runLater(() -> {
-            Template template = templates.getFirst();
+            Template template = templates.get(currentIndex);
             header.setText(template.getTitle());
+
             description.setText(template.getDescription());
 
             if(template.getSelections() > 0){
@@ -137,26 +139,37 @@ public class ClientGUI extends Application {
             ArrayList<String> list = new ArrayList<>(template.getOptions().keySet());
             Button[] buttons = {option1,option2,option3,option4,option5};
 
+
+
             for (int i = 0; i < buttons.length; i++) {
                 if(i <list.size()){
+                    String option = list.get(i);
                     boolean slected = template.getOptions().get(list.get(i));
-                    buttons[i].setText(list.get(i));
+                    System.out.println(slected);
+                    buttons[i].setText(option);
                     buttons[i].setManaged(true);
                     buttons[i].setVisible(true);
                     buttons[i].setDisable(false);
 
                     updateOption(buttons[i],slected);
                     int index = i;
+                    selected = 0;
+                    System.out.println("There are " +template.getSelections() +"Selections");
                     buttons[i].setOnAction(e->{
                         boolean current = template.getOptions().get(list.get(index));
-                        int selected = (int) template.getOptions().values().stream().filter(v->v).count();
                         System.out.println(selected);
-                        if(current){
-                            template.getOptions().put(list.get(index),false );
-                            updateOption(buttons[index],false);
-                        }else if(selected < template.getSelections()){
+                        if(!current && selected < template.getSelections()){
                             template.getOptions().put(list.get(index),true);
                             updateOption(buttons[index],true);
+                            selected++;
+                        }else if(current){
+                            template.getOptions().put(list.get(index),false);
+                            updateOption(buttons[index],false);
+                            if(selected == 0){
+                                selected = 0;
+                            }else{
+                                selected--;
+                            }
                         }
                     });
                 }else{
@@ -165,6 +178,7 @@ public class ClientGUI extends Application {
                     buttons[i].setDisable(true);
                 }
             }
+
             b1.setVisible(currentIndex > 0);
             b1.setOnAction(e ->{
                 currentIndex--;
@@ -180,6 +194,21 @@ public class ClientGUI extends Application {
                 try {
                     oss.writeObject(templates);
                     oss.flush();
+                    header.setText("Voting Election 2025");
+                    description.setText("The Voting Session will start soon");
+                    selection.setText("Please be Polite and Confidential");
+                    Button[] buttons_fin = {option1, option2, option3, option4, option5};
+                    for (Button btn : buttons_fin) {
+                        btn.setVisible(false);
+                    }
+                    b1.setVisible(false);
+
+                    b2.setVisible(false);
+
+                    b3.setVisible(false);
+
+                    currentIndex = 0;
+                    selected = 0;
                 } catch (IOException ex) {
                     System.err.println("failed to send template");
                 }
@@ -198,7 +227,7 @@ public class ClientGUI extends Application {
 
     private Label setLabel(Label header){
         header.setPrefWidth(600);
-        header.setText("Proposition Here");
+        header.setText("Voting Election 2025");
         header.setAlignment(Pos.CENTER);
         header.setFont(Font.font("System", FontWeight.BOLD,24));
         header.setStyle( "-fx-background-color: lightblue;" +
@@ -213,7 +242,7 @@ public class ClientGUI extends Application {
     private Label setDescription(Label description){
         description.setPrefWidth(600);
         description.setPrefHeight(150);
-        description.setText("Description of Proposition Here");
+        description.setText("The Voting Session will start soon");
         description.setAlignment(Pos.CENTER);
         description.setWrapText(true);
         description.setFont(Font.font("System", FontWeight.BOLD,24));
@@ -227,7 +256,7 @@ public class ClientGUI extends Application {
     }
     private Label setSelection(Label selection){
         selection.setPrefWidth(600);
-        selection.setText("Number of Selection");
+        selection.setText("Please be Polite and Confidential");
         selection.setAlignment(Pos.CENTER);
         selection.setFont(Font.font("System", FontWeight.BOLD,24));
         selection.setStyle( "-fx-background-color: lightpink;" +
@@ -250,6 +279,7 @@ public class ClientGUI extends Application {
                         "-fx-border-radius: 5px; " +
                         "-fx-background-radius: 5px;"
         );
+        option.setVisible(false);
         return option;
     }
 
@@ -266,10 +296,11 @@ public class ClientGUI extends Application {
                         "-fx-border-radius: 5px;" +
                         "-fx-background-radius: 5px;" +
                         "-fx-alignment: center;");
+        b1.setVisible(false);
         return b1;
     }
     private void updateOption(Button option,Boolean selected){
-        if(!selected){
+        if(selected){
             option.setStyle(
                     "-fx-background-color: gray;" +
                             "-fx-border-color: black;" +
@@ -286,5 +317,80 @@ public class ClientGUI extends Application {
                             "-fx-background-radius: 5px;" +
                             "-fx-alignment: center;");
         }
+    }
+
+    private void setFailTemplate(Label header, Label description, Label selection, Button option1, Button option2,
+                                 Button option3, Button option4, Button option5, Button b1, Button b2, Button b3,Template t){
+        Platform.runLater(() -> {
+
+            header.setText("WARNING");
+            description.setText("FAILURE OR TAMPERING HAS BEEN DETECTED");
+            selection.setVisible(false);
+            ArrayList<String> list = new ArrayList<>(t.getOptions().keySet());
+            selected = 0;
+            updateOption(option1,false);
+            updateOption(option2,false);
+            option1.setText(list.get(1));
+            option1.setOnAction(e -> {
+                boolean current = t.getOptions().get(list.getFirst());
+                System.out.println(selected);
+                if (!current && selected < 1) {
+                    t.getOptions().put(list.getFirst(), true);
+                    updateOption(option1, true);
+                    selected++;
+                } else if (current) {
+                    t.getOptions().put(list.getFirst(), false);
+                    updateOption(option1, false);
+                    if (selected == 0) {
+                        selected = 0;
+                    } else {
+                        selected--;
+                    }
+                }
+
+            });
+            option1.setVisible(true);
+            option2.setText(list.getFirst());
+            option2.setOnAction(e -> {
+                boolean current = t.getOptions().get(list.get(1));
+                System.out.println(selected);
+                if (!current && selected < 1) {
+                    t.getOptions().put(list.get(1), true);
+                    updateOption(option2, true);
+                    selected++;
+                } else if (current) {
+                    t.getOptions().put(list.get(1), false);
+                    updateOption(option2, false);
+                    if (selected == 0) {
+                        selected = 0;
+                    } else {
+                        selected--;
+                    }
+                }
+
+            });
+            VBox vbox = new VBox();
+            option2.setVisible(true);
+            option3.setVisible(false);
+            option4.setVisible(false);
+            option5.setVisible(false);
+            b1.setVisible(false);
+            b3.setVisible(false);
+            b2.setVisible(true);
+            b2.setOnAction(e -> {
+                if (t.getOptions().get(list.getFirst())) {
+                    try {
+                        oss.writeObject(t);
+                        oss.flush();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    System.exit(0);
+                } else {
+                    System.out.println("Delaying Shutdown");
+                }
+            });
+        });
+
     }
 }

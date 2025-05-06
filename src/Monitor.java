@@ -52,7 +52,7 @@ public class Monitor {
 
             // just some error checking to make sure that we are actually not monitoring before voting controller has started
             while (vc == null){
-                System.out.println("Waiting for voting control to start...");
+//                System.out.println("Waiting for voting control to start...");
                 Thread.sleep(1000);
             }
 

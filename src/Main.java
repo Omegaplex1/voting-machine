@@ -45,7 +45,7 @@ public class Main {
         VoteRecording voteRecording = new VoteRecording(sdCardPort3, sdCardPort2, printer);
 
         //init the vote process
-        VotingProcess votingProcess = new VotingProcess(screen, ballot);
+        VotingProcess votingProcess = new VotingProcess(screen);
 
         // init the adminManager
         AdminManager adminManager = new AdminManager(latch, screen);
