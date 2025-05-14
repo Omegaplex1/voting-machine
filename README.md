@@ -32,7 +32,7 @@ The system follows a modular architecture where each hardware component (screen,
 
 ### 📊 System Diagram
 
-![System Architecture](![architecture](https://github.com/user-attachments/assets/2d64c6d9-4381-4c62-9b61-0ab84ec6271e))
+![System Architecture](./resources/architecture.png)
 
 > ℹ️ Make sure to place the image in your repo (e.g., under a `resources/` folder), and update the path if needed.
 
@@ -69,7 +69,7 @@ The system follows a modular architecture where each hardware component (screen,
 | SD Card 3 Driver  | SD Card 3            |
 | Printer Driver    | Printer              |
 
-Each driver operates as an independent thread and communicates with `VotingControl` using Java's `BlockingQueue`, mimicking asynchronous hardware communication in a real voting machine environment.
+Each driver operates as an independent thread and communicates with `VotingControl` using top down, mimicking asynchronous hardware communication in a real voting machine environment.
 
 ---
 ---
