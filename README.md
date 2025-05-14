@@ -72,4 +72,37 @@ The system follows a modular architecture where each hardware component (screen,
 Each driver operates as an independent thread and communicates with `VotingControl` using top down, mimicking asynchronous hardware communication in a real voting machine environment.
 
 ---
+
+## 🚀 How to Run
+
+Follow these steps to run the full voting machine simulation:
+
+### 1. Run the **Client GUI**
+Launch the graphical interface that simulates the voting screen. This should be started first to prepare the devices for communication.
+
+### 2. Run the **Terminal Window Server**
+This acts as the control center for simulating card insertions, hardware failures, and other interactive inputs. It communicates with the clients via Java sockets.
+
+### 3. Run the **Main File**
+Once both the client GUI and the server are running, execute the `Main.java` file. This initializes the system, loads devices, and starts the election workflow.
+
 ---
+
+### 🗳️ Starting the Voting Process
+
+Once all components are running, you'll use the terminal to simulate card insertions. To begin:
+
+- **Insert a Voter Card:**  
+  Type `V` followed by a **12-digit number** (e.g., `V\n123456789012`) to simulate inserting a valid voter card.
+
+- **Insert an Admin Card:**  
+  Type `A` followed by a **12-digit number** (e.g., `A\n000000000001`) to simulate inserting an admin card and accessing administrative options.
+
+The system will respond based on the card type and allow the voter or admin to proceed through the appropriate workflow.
+
+---
+
+### ⚠️ JavaFX Dependency Warning
+
+> **Important:** This project uses **JavaFX**, which is **not bundled** with some JDK distributions (like OpenJDK).  
+> You must ensure that JavaFX is properly set up in your development environment.
